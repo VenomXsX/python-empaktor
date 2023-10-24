@@ -64,4 +64,4 @@ def compress_data(data):
         output += codes[char]
     # print(data)
     # print(codes)
-    return output
+    return str(codes) + "\n" + output
