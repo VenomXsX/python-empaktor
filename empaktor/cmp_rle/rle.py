@@ -28,7 +28,6 @@ def decode_rle(txt):
             i += 1
             while not txt[i] == "-":
                 count += txt[i]
-                print(count)
                 counts.append(int(count))
                 i += 1
         else:
