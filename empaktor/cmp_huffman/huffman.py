@@ -64,4 +64,9 @@ def compress_data(data):
         output += codes[char]
     # print(data)
     # print(codes)
-    return str(codes) + "\n" + output
+    return output
+
+
+def code_map(data):
+    map = dict(Counter(data))
+    return map

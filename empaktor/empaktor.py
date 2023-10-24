@@ -1,7 +1,7 @@
 import sys
 import os
 import tarfile
-from helper import encode, extract
+from helper import *
 
 
 args = sys.argv.copy()
@@ -76,7 +76,7 @@ elif "--compression" in args:
                 os.remove(archive_name)
         try:
             # Check if an encoding method is provided
-            user_alg = args[args.index("--compression") + 1]
+            user_alg = args[args.index("--compression") + 1].lower()
             # Check if the provided encoding method is supported
             if user_alg not in methods:
                 print(
@@ -101,17 +101,31 @@ elif "--compression" in args:
                         with open(filename, "r") as file:
                             content = file.read()
                             try:
-                                encoded_filename = f"{filename.split('.')[-2]}_encoded.{filename.split('.')[-1]}"
+                                # Append "_encoded" to the end of filename
+                                encoded_filename = append_filename(filename, "encoded")
                                 with open(encoded_filename, "w") as encoded_file:
                                     encoded_file.write(
                                         encode(content, user_alg))
                             except EnvironmentError:
                                 print(
                                     f"There was an error when creating the encoded filename {encoded_filename}")
+                            if user_alg == "huffman":
+                                try:
+                                    huffman_map_filename = append_filename(filename, "huffman_code_map")
+                                    with open(huffman_map_filename, "w") as huffman_map_file:
+                                        huffman_map_file.write(
+                                            huffman_map(content))
+                                except EnvironmentError:
+                                    print(
+                                        f"There was an error creating the huffman code map for the file {filename}")
+                                    exit(1)
                         try:
                             with tarfile.open(archive_name, "w:gz") as archive:
                                 archive.add(encoded_filename)
                                 os.remove(encoded_filename)
+                                if user_alg == "huffman":
+                                    archive.add(huffman_map_filename)
+                                    os.remove(huffman_map_filename)
                         except Exception as e:
                             print(e)
                     except EnvironmentError:
