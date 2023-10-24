@@ -2,7 +2,7 @@ import tarfile
 import os
 import shutil
 from cmp_rle.rle import encode_rle, decode_rle
-from cmp_huffman.huffman import encode_huffman, decode_huffman
+from cmp_huffman.huffman import compress_data
 from cmp_burrows.burrows_wheeler import encode_bwt, decode_bwt
 
 
@@ -40,7 +40,7 @@ def encode(file, method):
         file = encode_rle(file)
         return file
     if method == "huffman":
-        file = encode_huffman(file)
+        file = compress_data(file)
         return file
     else:
         file = encode_bwt(file)
@@ -52,7 +52,7 @@ def decode(file, method):
         file = decode_rle(file)
         return file
     if method == "huffman":
-        file = decode_huffman(file)
+        # file = compress_data(file)
         return file
     else:
         file = decode_bwt(file)
