@@ -13,7 +13,7 @@ for i in range(len(args)):
         args[i] = "--extract"
     if args[i] == "-c":
         args[i] = "--compression"
-print(f"args: {args}")
+# print(f"args: {args}")
 
 methods = ["rle", "huffman", "bwt"]
 
@@ -21,23 +21,25 @@ methods = ["rle", "huffman", "bwt"]
 def encode(file, method):
     if method == "rle":
         file = encode_rle(file)
-        return
+        return file
     if method == "huffman":
         file = encode_huffman(file)
-        return
+        return file
     else:
         file = encode_bwt(file)
+        return file
 
 
 def decode(file, method):
     if method == "rle":
         file = decode_rle(file)
-        return
+        return file
     if method == "huffman":
         file = decode_huffman(file)
-        return
+        return file
     else:
         file = decode_bwt(file)
+        return file
 
 
 
@@ -112,13 +114,24 @@ elif "--compression" in args:
                 # Check if the files to encode are provided
                 files = args[args.index("--compression") + 2:]
                 # Check if a file exists
-                for f in files:
-                    if not os.path.exists(f):
-                        print(f"The file {f} does not exist, skipping...")
+                for filename in files:
+                    if not os.path.exists(filename):
+                        print(f"The file {filename} does not exist, skipping...")
                         continue
                     # CALL ENCODING FUNCTION HERE
-                    print(f"Compressing file(s) {f} into {archive_name}.")
-                    # encode(file=f, method=user_alg)
+                    print(f"Compressing file(s) {filename} into {archive_name}.")
+                    try:
+                        with open(filename, "r") as file:
+                            content = file.read()
+                            try:
+                                encoded_filename = f"{filename.split('.')[-2]}_encoded.{filename.split('.')[-1]}"
+                                with open(encoded_filename, "w") as encoded_file:
+                                    encoded_file.write(encode(content, user_alg))
+                            except EnvironmentError:
+                                print(f"There was an error when creating the encoded filename {encoded_filename}")
+                    except EnvironmentError:
+                        print(f"There was an error opening file {filename}. Skipping...")
+                        continue
             except IndexError:
                 print(f"Please specify one or more files to compress.")
     except IndexError:
