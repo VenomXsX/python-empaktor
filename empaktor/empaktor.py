@@ -12,9 +12,17 @@ for i in range(len(args)):
         args[i] = "--extract"
     if args[i] == "-c":
         args[i] = "--compression"
+    if args[i] == "-h":
+        args[i] = "--help"
 # print(f"args: {args}")
 
 methods = ["rle", "huffman", "bwt"]
+
+# Help logic
+if "--help" in args:
+    help_msg()
+    exit(0)
+
 
 # Extract logic
 if "--extract" in args:
@@ -24,7 +32,7 @@ if "--extract" in args:
         default_alg = "rle"
         # Check if the provided filename exists
         if not os.path.exists(archive_name):
-            print(f"The file {archive_name} does not exist.")
+            print(f"MISSING FILE: The file {archive_name} does not exist.")
             exit(1)
         # Check if the user provided a decoding method
         if not "--compression" in args:
@@ -38,10 +46,10 @@ if "--extract" in args:
             user_alg = args[args.index("--compression") + 1]
             if user_alg not in methods:
                 print(
-                    f"The specified compression method ({user_alg}) isn't supported.")
+                    f"INPUT ERROR: The specified compression method ({user_alg}) isn't supported.")
                 exit(1)
         except IndexError:
-            print(f"Please specify a compression method.")
+            print(f"MISSING INPUT: Please specify a compression method.")
         else:
             # CALL DECODE FUNCTION HERE
             if user_alg == "huffman":
@@ -57,7 +65,8 @@ if "--extract" in args:
                 print(f"Done!")
                 exit(0)
     except IndexError:
-        print(f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]")
+        print(
+            f"\nUsage: python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]\n")
         exit(1)
 
 
@@ -67,12 +76,13 @@ elif "--compression" in args:
         archive_name = args[1]
         # Check if destination is specified
         if archive_name == "--compression":
-            print(f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]")
+            print(
+                f"\n Usage: python3 empaktor.py <destination_archive_name> [--compression | -c] [rle | huffman | bwt] <file1> <file2> ...\n")
             exit(1)
         # Dialog if destination file already exists
         if os.path.exists(archive_name):
             print(
-                f"The file {archive_name} already exist. Do you want to remplace it?")
+                f"DIALOG: The file {archive_name} already exist. Do you want to remplace it?")
             input = input("yes/no: ").lower()
             while input not in ["yes", "no", "y", "n"]:
                 input = input("yes/no: ").lower()
@@ -87,10 +97,10 @@ elif "--compression" in args:
             # Check if the provided encoding method is supported
             if user_alg not in methods:
                 print(
-                    f"The specified compression method ({user_alg}) isn't supported.")
+                    f"INPUT ERROR: The specified compression method ({user_alg}) isn't supported.")
                 exit(1)
         except IndexError:
-            print(f"Please specify a compression method.")
+            print(f"MISSING INPUT: Please specify a compression method.")
         else:
             try:
                 # Check if the files to encode are provided
@@ -102,7 +112,7 @@ elif "--compression" in args:
                     for filename in files:
                         if not os.path.exists(filename):
                             print(
-                                f"The file {filename} does not exist, skipping...")
+                                f"MISSING FILE: The file {filename} does not exist, skipping...")
                             continue
                         # CALL ENCODING FUNCTION HERE ============
                         print(
@@ -114,7 +124,7 @@ elif "--compression" in args:
                                     # Append "_encoded" to the end of filename
                                     encoded_filename = append_filename(
                                         filename, "encoded")
-                                    
+
                                     # ONLY FOR HUFFMAN
                                     if user_alg == "huffman":
                                         with open(encoded_filename, "w") as encoded_file:
@@ -127,18 +137,19 @@ elif "--compression" in args:
                                             huffman_map_filename = encoded_filename + ".hcm"
                                             with open(huffman_map_filename, "w") as huffman_map_file:
                                                 huffman_map_file.write(
-                                                str(codes_map))
+                                                    str(codes_map))
                                         except EnvironmentError:
                                             print(
-                                            f"There was an error creating the huffman code map for the file {filename}")
-                                    
+                                                f"ERROR: Cannot create the huffman code map for the file {filename}")
+
                                     # ELSE FOR ANY OTHER ALGS
                                     else:
                                         with open(encoded_filename, "w") as encoded_file:
-                                            encoded_file.write(encode(content, user_alg))
+                                            encoded_file.write(
+                                                encode(content, user_alg))
                                 except EnvironmentError:
                                     print(
-                                        f"There was an error when creating the encoded filename {encoded_filename}")
+                                        f"ERROR: Cannot create the encoded filename {encoded_filename}")
                                     exit(1)
                             try:
                                 # with tarfile.open(archive_name, "w:gz") as archive:
@@ -153,16 +164,18 @@ elif "--compression" in args:
                                 print(e)
                         except EnvironmentError:
                             print(
-                                f"There was an error while reading file {filename}. Skipping...")
+                                f"ERROR: Cannot read file {filename}. Skipping...")
                             continue
                     # ========================================
             except IndexError:
-                print(f"Please specify one or more files to compress.")
+                print(f"MISSING INPUT: Please specify one or more files to compress.")
         exit(0)
     except IndexError:
-        print(f"python3 empaktor.py <destination_archive_name> [--compression | -c] [rle | huffman | bwt] <file1> <file2> ...")
+        print(
+            f"\nUsage: python3 empaktor.py <destination_archive_name> [--compression | -c] [rle | huffman | bwt] <file1> <file2> ...\n")
+        exit(1)
 
 
 else:
-    print(f"Expecting either --extract or --compression")
-    exit(1)
+    help_msg()
+    exit(0)
