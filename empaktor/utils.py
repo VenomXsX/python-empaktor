@@ -72,3 +72,12 @@ def decode(content: str, method: str, huffman_map: bool = None) -> str:
     if method == "huffman":
         content = decode_huffman(content, huffman_map)
         return content
+
+
+def help_msg():
+    print(f"\nTo compress, run:")
+    print(
+        f"python3 empaktor.py <destination_archive_name> [--compression | -c] [rle | huffman | bwt] <file1> <file2> ...\n")
+    print(f"To extract, run:")
+    print(
+        f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]\n")
