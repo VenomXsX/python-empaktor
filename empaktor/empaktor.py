@@ -44,11 +44,18 @@ if "--extract" in args:
             print(f"Please specify a compression method.")
         else:
             # CALL DECODE FUNCTION HERE
-            print(
-                f"Extracting file {archive_name} with method {user_alg.upper()}...")
-            extract(archive_name, user_alg)
-            print(f"Done!")
-            exit(0)
+            if user_alg == "huffman":
+                print(
+                    f"Extracting file {archive_name} with method {user_alg.upper()}...")
+                extract(archive_name, user_alg, True)
+                print(f"Done!")
+                exit(0)
+            else:
+                print(
+                    f"Extracting file {archive_name} with method {user_alg.upper()}...")
+                extract(archive_name, user_alg)
+                print(f"Done!")
+                exit(0)
     except IndexError:
         print(f"Please specify a filename to extract.")
         exit(1)
@@ -91,7 +98,7 @@ elif "--compression" in args:
                 # Create the tarfile now and add in files during each iteration
                 with tarfile.open(archive_name, "w:gz") as archive:
 
-                # Check if a file exists
+                    # Check if a file exists
                     for filename in files:
                         if not os.path.exists(filename):
                             print(
@@ -105,31 +112,43 @@ elif "--compression" in args:
                                 content = file.read()
                                 try:
                                     # Append "_encoded" to the end of filename
-                                    encoded_filename = append_filename(filename, "encoded")
-                                    with open(encoded_filename, "w") as encoded_file:
-                                        encoded_file.write(
-                                            encode(content, user_alg))
+                                    encoded_filename = append_filename(
+                                        filename, "encoded")
+                                    
+                                    # ONLY FOR HUFFMAN
+                                    if user_alg == "huffman":
+                                        with open(encoded_filename, "w") as encoded_file:
+                                            content, codes_map = encode(
+                                                content, user_alg)
+                                            encoded_file.write(
+                                                content)
+                                        try:
+                                            # add extension huffman code map to associated file
+                                            huffman_map_filename = encoded_filename + ".hcm"
+                                            with open(huffman_map_filename, "w") as huffman_map_file:
+                                                huffman_map_file.write(
+                                                str(codes_map))
+                                        except EnvironmentError:
+                                            print(
+                                            f"There was an error creating the huffman code map for the file {filename}")
+                                    
+                                    # ELSE FOR ANY OTHER ALGS
+                                    else:
+                                        with open(encoded_filename, "w") as encoded_file:
+                                            encoded_file.write(encode(content, user_alg))
                                 except EnvironmentError:
                                     print(
                                         f"There was an error when creating the encoded filename {encoded_filename}")
-                                if user_alg == "huffman":
-                                    try:
-                                        huffman_map_filename = append_filename(filename, "huffman_code_map")
-                                        with open(huffman_map_filename, "w") as huffman_map_file:
-                                            huffman_map_file.write(
-                                                huffman_map(content))
-                                    except EnvironmentError:
-                                        print(
-                                            f"There was an error creating the huffman code map for the file {filename}")
-                                        exit(1)
+                                    exit(1)
                             try:
                                 # with tarfile.open(archive_name, "w:gz") as archive:
-                                    print(f"Adding {encoded_filename} to archive...")
-                                    archive.add(encoded_filename)
-                                    os.remove(encoded_filename)
-                                    if user_alg == "huffman":
-                                        archive.add(huffman_map_filename)
-                                        os.remove(huffman_map_filename)
+                                print(
+                                    f"Adding {encoded_filename} to archive...")
+                                archive.add(encoded_filename)
+                                os.remove(encoded_filename)
+                                if user_alg == "huffman":
+                                    archive.add(huffman_map_filename)
+                                    os.remove(huffman_map_filename)
                             except Exception as e:
                                 print(e)
                         except EnvironmentError:
