@@ -1,5 +1,6 @@
 import heapq
 from collections import Counter
+import json
 
 
 class Node:
@@ -59,14 +60,28 @@ def compress_data(data):
     tree = build_tree(char_freq)
     codes = generate_huffman(tree)
 
+
     output = ""
     for char in data:
         output += codes[char]
     # print(data)
     # print(codes)
-    return output
+    codes = json.dumps(codes)
+    return output, codes
 
 
-def code_map(data):
-    map = dict(Counter(data))
-    return map
+# def code_map(data):
+#     map = dict(Counter(data))
+#     return map
+
+
+def decode_huffman(encoded_txt, codes_map):
+    # converts from dictionnary string to dictionnary
+    codes_map = json.loads(codes_map)
+    decoded_txt = ""
+    while len(encoded_txt) > 0:
+        for val in codes_map:
+            if encoded_txt[0:len(codes_map[val])] == codes_map[val]:
+                decoded_txt += val
+                encoded_txt = encoded_txt[len(codes_map[val]):]
+    return decoded_txt
