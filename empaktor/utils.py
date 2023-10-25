@@ -76,5 +76,3 @@ def decode(file, method, huffman_map = None):
     if method == "huffman":
         file = decode_huffman(file, huffman_map)
         return file
-
-# extract("/home/phan_n/ETNA/ALG-CMP1_Empaktor/empaktor/test.tar.gz", "huffman", True)
