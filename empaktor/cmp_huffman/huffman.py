@@ -25,7 +25,7 @@ class Node:
 #     return freq
 
 
-def build_tree(char_freq):
+def build_tree(char_freq: dict):
     heap = [Node(char, freq) for char, freq in char_freq.items()]
     heapq.heapify(heap)
 
@@ -42,7 +42,7 @@ def build_tree(char_freq):
     return heap[0]
 
 
-def generate_huffman(node, code="", mapping=None):
+def generate_huffman(node: Node, code: str = "", mapping: dict = None):
     if mapping is None:
         mapping = {}
     if node is not None:
@@ -54,12 +54,11 @@ def generate_huffman(node, code="", mapping=None):
     return mapping
 
 
-def compress_data(data):
+def compress_data(data: str):
     char_freq = dict(Counter(data))
     # print(char_freq)
     tree = build_tree(char_freq)
     codes = generate_huffman(tree)
-
 
     output = ""
     for char in data:
@@ -70,12 +69,7 @@ def compress_data(data):
     return output, codes
 
 
-# def code_map(data):
-#     map = dict(Counter(data))
-#     return map
-
-
-def decode_huffman(encoded_txt, codes_map):
+def decode_huffman(encoded_txt: str, codes_map: str):
     # converts from dictionnary string to dictionnary
     codes_map = json.loads(codes_map)
     decoded_txt = ""
