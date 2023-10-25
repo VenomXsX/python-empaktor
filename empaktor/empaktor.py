@@ -57,7 +57,7 @@ if "--extract" in args:
                 print(f"Done!")
                 exit(0)
     except IndexError:
-        print(f"Please specify a filename to extract.")
+        print(f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]")
         exit(1)
 
 
@@ -67,7 +67,7 @@ elif "--compression" in args:
         archive_name = args[1]
         # Check if destination is specified
         if archive_name == "--compression":
-            print(f"Please specify a destination file to put the encoded files into.")
+            print(f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]")
             exit(1)
         # Dialog if destination file already exists
         if os.path.exists(archive_name):
@@ -160,7 +160,7 @@ elif "--compression" in args:
                 print(f"Please specify one or more files to compress.")
         exit(0)
     except IndexError:
-        print(f"Please specify a destination file to put the encoded files into.")
+        print(f"python3 empaktor.py <destination_archive_name> [--compression | -c] [rle | huffman | bwt] <file1> <file2> ...")
 
 
 else:
