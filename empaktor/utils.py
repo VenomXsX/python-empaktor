@@ -3,10 +3,10 @@ import os
 import shutil
 from cmp_rle.rle import encode_rle, decode_rle
 from cmp_huffman.huffman import compress_data, decode_huffman
-from cmp_burrows.burrows_wheeler import encode_bwt, decode_bwt
+from cmp_burrows.burrows_wheeler import transform_bwt, inverse_bwt
 
 
-def extract(archive_name, algo, huffman = False):
+def extract(archive_name: str, algo: str, huffman: bool = False):
     try:
         with tarfile.open(archive_name) as file:
             os.mkdir("./empaktor_tmp")
@@ -46,33 +46,29 @@ def extract(archive_name, algo, huffman = False):
         exit(e)
 
 
-# def huffman_map(data):
-#     return str(code_map(data))
-
-
-def append_filename(filename, string):
+def append_filename(filename: str, string: str) -> str:
     return f"{filename.split('.')[-2]}_{string}.{filename.split('.')[-1]}"
 
 
-def encode(file, method):
+def encode(content: str, method: str) -> str:
     if method == "rle":
-        file = encode_rle(file)
-        return file
+        content = encode_rle(content)
+        return content
     if method == "huffman":
-        file, codes_map = compress_data(file)
-        return file, codes_map
+        content, codes_map = compress_data(content)
+        return content, codes_map
     else:
-        file = encode_bwt(file)
-        return file
+        content = transform_bwt(content)
+        return content
 
 
-def decode(file, method, huffman_map = None):
+def decode(content: str, method: str, huffman_map: bool = None) -> str:
     if method == "rle" and huffman_map is None:
-        file = decode_rle(file)
-        return file
+        content = decode_rle(content)
+        return content
     if method == "bwt" and huffman_map is None:
-        file = decode_bwt(file)
-        return file
+        content = inverse_bwt(content)
+        return content
     if method == "huffman":
-        file = decode_huffman(file, huffman_map)
-        return file
+        content = decode_huffman(content, huffman_map)
+        return content

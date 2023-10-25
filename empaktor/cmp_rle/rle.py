@@ -1,4 +1,4 @@
-def encode_rle(txt):
+def encode_rle(txt: str) -> str:
     output = ""
     i = 0
     while i < len(txt):
@@ -17,7 +17,7 @@ def encode_rle(txt):
     return output
 
 
-def decode_rle(txt):
+def decode_rle(txt: str) -> str:
     counts = []
     chars = []
     output = ""
