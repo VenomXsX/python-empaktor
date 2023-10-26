@@ -33,18 +33,12 @@ def extraction(args):
             print(f"MISSING INPUT: Please specify a compression method.")
         else:
             # CALL DECODE FUNCTION HERE
-            if user_alg == "huffman":
-                print(
-                    f"Extracting file {archive_name} with method {user_alg.upper()}...")
-                extract(archive_name, user_alg, True)
-                print(f"Done!")
-                exit(0)
-            else:
-                print(
-                    f"Extracting file {archive_name} with method {user_alg.upper()}...")
-                extract(archive_name, user_alg)
-                print(f"Done!")
-                exit(0)
+            print(
+                f"Extracting file {archive_name} with method {user_alg.upper()}...")
+            extract(archive_name, user_alg)
+            print(f"Done!")
+            exit(0)
+
     except IndexError:
         print(
             f"\nUsage: python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]\n")
@@ -105,22 +99,33 @@ def compression(args):
                                     encoded_filename = append_filename(
                                         filename, "encoded")
 
-                                    # ONLY FOR HUFFMAN
-                                    if user_alg == "huffman":
+                                    # ONLY FOR HUFFMAN AND BWT
+                                    if user_alg in ["huffman", "bwt"]:
                                         with open(encoded_filename, "w") as encoded_file:
-                                            content, codes_map = encode(
+                                            content, aux = encode(
                                                 content, user_alg)
                                             encoded_file.write(
                                                 content)
-                                        try:
                                             # add extension huffman code map to associated file
-                                            huffman_map_filename = encoded_filename + ".hcm"
-                                            with open(huffman_map_filename, "w") as huffman_map_file:
-                                                huffman_map_file.write(
-                                                    str(codes_map))
-                                        except EnvironmentError:
-                                            print(
-                                                f"ERROR: Cannot create the huffman code map for the file {filename}")
+                                            # or the bwt key
+                                        if user_alg == "huffman":
+                                            try:
+                                                huffman_map_filename = encoded_filename + ".hcm"
+                                                with open(huffman_map_filename, "w") as huffman_map_file:
+                                                    huffman_map_file.write(
+                                                        str(aux))
+                                            except EnvironmentError:
+                                                print(
+                                                    f"ERROR: Cannot create the huffman code map for the file {filename}")
+                                        else:
+                                            try:
+                                                bwt_key_filename = encoded_filename + ".bwtk"
+                                                with open(bwt_key_filename, "w") as bwt_key_file:
+                                                    bwt_key_file.write(
+                                                        str(aux))
+                                            except EnvironmentError:
+                                                print(
+                                                    f"ERROR: Cannot create the BWT key file for the file {filename}")
 
                                     # ELSE FOR ANY OTHER ALGS
                                     else:
@@ -140,6 +145,10 @@ def compression(args):
                                 if user_alg == "huffman":
                                     archive.add(huffman_map_filename)
                                     os.remove(huffman_map_filename)
+                                if user_alg == "bwt":
+                                    archive.add(bwt_key_filename)
+                                    os.remove(bwt_key_filename)
+
                             except Exception as e:
                                 print(e)
                         except EnvironmentError:
