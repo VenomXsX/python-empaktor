@@ -1,4 +1,4 @@
-def transform_bwt(data: str) -> str:
+def transform_bwt(data: str) -> str | int:
     data = data.strip()
     table = []
     for i in range(len(data)):

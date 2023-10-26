@@ -14,16 +14,6 @@ class Node:
     def __lt__(self, other):
         return self.freq < other.freq
 
-# def get_occurence(txt):
-#     freq = {}
-#     for char in txt:
-#         if char in freq:
-#             freq[char] += 1
-#         else:
-#             freq[char] = 1
-#     freq = dict(sorted(freq.items(), key=lambda x: x[1]))
-#     return freq
-
 
 def build_tree(char_freq: dict):
     heap = [Node(char, freq) for char, freq in char_freq.items()]
@@ -54,22 +44,19 @@ def generate_huffman(node: Node, code: str = "", mapping: dict = None):
     return mapping
 
 
-def compress_data(data: str):
+def compress_data(data: str) -> str | str:
     char_freq = dict(Counter(data))
-    # print(char_freq)
     tree = build_tree(char_freq)
     codes = generate_huffman(tree)
 
     output = ""
     for char in data:
         output += codes[char]
-    # print(data)
-    # print(codes)
     codes = json.dumps(codes)
     return output, codes
 
 
-def decode_huffman(encoded_txt: str, codes_map: str):
+def decode_huffman(encoded_txt: str, codes_map: str) -> str:
     # converts from dictionnary string to dictionnary
     codes_map = json.loads(codes_map)
     decoded_txt = ""
