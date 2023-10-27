@@ -92,7 +92,7 @@ decoded_text = decode_rle(encoded_text)
 print("Decoded text:", decoded_text)
 
 # This prints
-# Encoded text: -5-A-3-B-5-1
+# Encoded text: |5|A|3|B|5|1
 #
 # Decoded text: AAAAABBB11111
 ```
