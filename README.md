@@ -1,5 +1,7 @@
 # CLI compression tool Empaktor
 
+/!\ **This tool requires Python** /!\
+
 Made by PHAN and ZHU
 
 ## Usage
