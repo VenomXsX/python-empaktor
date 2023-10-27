@@ -52,6 +52,10 @@ def compress_data(data: str) -> str | str:
     output = ""
     for char in data:
         output += codes[char]
+    compressed_size = 0
+    for char, freq in char_freq.items():
+        compressed_size += char_freq[char] * len(codes[char])
+    print(f"Ratio: {compressed_size / (len(data) * 8)}") 
     codes = json.dumps(codes)
     return output, codes
 
