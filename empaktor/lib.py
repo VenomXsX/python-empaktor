@@ -45,7 +45,7 @@ def extraction(args):
         exit(1)
 
 
-def compression(args):
+def compression(args: list[str]):
     try:
         archive_name = args[1]
         # Check if destination is specified
@@ -57,10 +57,10 @@ def compression(args):
         if os.path.exists(archive_name):
             print(
                 f"DIALOG: The file {archive_name} already exist. Do you want to remplace it?")
-            input = input("yes/no: ").lower()
-            while input not in ["yes", "no", "y", "n"]:
-                input = input("yes/no: ").lower()
-            if input in ["no", "n"]:
+            user_input = input("yes/no: ").lower()
+            while user_input not in ["yes", "no", "y", "n"]:
+                user_input = input("yes/no: ").lower()
+            if user_input in ["no", "n"]:
                 print(f"Aborting...")
                 exit(1)
             else:
@@ -91,13 +91,13 @@ def compression(args):
                         # CALL ENCODING FUNCTION HERE ============
                         print(
                             f"Compressing file(s) {filename} into {archive_name}.")
+                        # Append "_encoded" to the end of filename
+                        encoded_filename = append_filename(
+                            filename, "encoded")
                         try:
                             with open(filename, "r") as file:
                                 content = file.read()
                                 try:
-                                    # Append "_encoded" to the end of filename
-                                    encoded_filename = append_filename(
-                                        filename, "encoded")
 
                                     # ONLY FOR HUFFMAN AND BWT
                                     if user_alg in ["huffman", "bwt"]:
@@ -137,17 +137,39 @@ def compression(args):
                                         f"ERROR: Cannot create the encoded filename {encoded_filename}")
                                     exit(1)
                             try:
-                                # with tarfile.open(archive_name, "w:gz") as archive:
                                 print(
                                     f"Adding {encoded_filename} to archive...")
-                                archive.add(encoded_filename)
-                                os.remove(encoded_filename)
-                                if user_alg == "huffman":
-                                    archive.add(huffman_map_filename)
-                                    os.remove(huffman_map_filename)
-                                if user_alg == "bwt":
-                                    archive.add(bwt_key_filename)
-                                    os.remove(bwt_key_filename)
+                                if user_alg in ["huffman", "bwt"]:
+                                    # take filename without the extension
+                                    subfolder_name = "".join(
+                                        filename.split(".")[:-1])
+                                    os.mkdir(subfolder_name)
+
+                                    if user_alg == "huffman":
+                                        shutil.move(
+                                            huffman_map_filename, subfolder_name)
+                                        shutil.move(encoded_filename,
+                                                    subfolder_name)
+                                        archive.add(
+                                            f"{subfolder_name}/{huffman_map_filename}")
+                                        archive.add(
+                                            f"{subfolder_name}/{encoded_filename}")
+                                        shutil.rmtree(subfolder_name)
+
+                                    if user_alg == "bwt":
+                                        shutil.move(bwt_key_filename,
+                                                    subfolder_name)
+                                        shutil.move(encoded_filename,
+                                                    subfolder_name)
+                                        archive.add(
+                                            f"{subfolder_name}/{bwt_key_filename}")
+                                        archive.add(
+                                            f"{subfolder_name}/{encoded_filename}")
+                                        shutil.rmtree(subfolder_name)
+
+                                else:
+                                    archive.add(encoded_filename)
+                                    os.remove(encoded_filename)
 
                             except Exception as e:
                                 print(e)
