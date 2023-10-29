@@ -19,7 +19,6 @@ def extract(archive_name: str, algo: str):
                         # SET ACTIVE HUFFMAN MAP
                         if element.endswith(".hcm"):
                             active_huffman_map_filepath = f"./empaktor_tmp/{item}/{element}"
-                            print(active_huffman_map_filepath)
                             continue
                         # SET ACTIVE BWT KEY FILE
                         if item.endswith(".bwtk"):
@@ -95,7 +94,7 @@ def extract(archive_name: str, algo: str):
         shutil.rmtree("./empaktor_tmp")
     except Exception as e:
         print(e)
-        exit(e)
+        exit(0)
 
 
 def append_filename(filename: str, string: str) -> str:
