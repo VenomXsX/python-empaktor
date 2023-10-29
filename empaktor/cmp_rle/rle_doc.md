@@ -36,7 +36,7 @@ Else break the innner loop and append the count (enclosed in a seperator, the hy
 ```py
         else:
             break
-    output += f"-{count}-{char}"
+    output += f"|{count}|{char}"
     i = char_idx + 1
 return output
 ```
@@ -64,9 +64,9 @@ Iterate on the encoded text. Append the count (this is easily done because the c
 ```py
 while i < len(txt):
     count = ""
-    if txt[i] == "-":
+    if txt[i] == "|":
         i += 1
-        while not txt[i] == "-":
+        while not txt[i] == "|":
             count += txt[i]
                 counts.append(int(count))
                 i += 1
