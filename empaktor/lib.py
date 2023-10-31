@@ -19,11 +19,11 @@ def extraction(args):
         if not "--compression" in args:
 
             # SEARCHING FOR A CORRECT FILE EXTENSION
-            
+
             print(
                 f"Trying to detect which algorithm to extract {archive_name}...")
             detected_alg = detect_algo(archive_name)
-            
+
             if detected_alg != default_alg:
                 extract(archive_name, detected_alg)
             else:
@@ -110,7 +110,7 @@ def compression(args: list[str]):
                                     # ONLY FOR HUFFMAN AND BWT
                                     if user_alg in ["huffman", "bwt"]:
                                         with open(encoded_filename, "w") as encoded_file:
-                                            # aux = auxiliary data bundled as a seperate file 
+                                            # aux = auxiliary data bundled as a seperate file
                                             # with the encoded file
                                             # when using Huffman or BWT
                                             content, aux = encode(
