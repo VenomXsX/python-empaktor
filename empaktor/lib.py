@@ -17,10 +17,18 @@ def extraction(args):
             exit(1)
         # Check if the user provided a decoding method
         if not "--compression" in args:
-            # CALL DECODE FUNCTION HERE
+
+            # SEARCHING FOR A CORRECT FILE EXTENSION
+            
             print(
-                f"Extracting file {archive_name} with default method {default_alg}...")
-            extract(archive_name, default_alg)
+                f"Trying to detect which algorithm to extract {archive_name}...")
+            detected_alg = detect_algo(archive_name)
+            
+            if detected_alg != default_alg:
+                extract(archive_name, detected_alg)
+            else:
+                print(f"Extracting with default algorithm RLE")
+                extract(archive_name, default_alg)
             print(f"Done!")
             exit(0)
         try:

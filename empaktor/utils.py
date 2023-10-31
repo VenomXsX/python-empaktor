@@ -7,7 +7,7 @@ from cmp_burrows.burrows_wheeler import transform_bwt, inverse_bwt
 
 
 def extract(archive_name: str, algo: str):
-    try:
+    # try:
         with tarfile.open(archive_name) as file:
             os.mkdir("./empaktor_tmp")
             file.extractall("./empaktor_tmp")
@@ -21,7 +21,7 @@ def extract(archive_name: str, algo: str):
                             active_huffman_map_filepath = f"./empaktor_tmp/{item}/{element}"
                             continue
                         # SET ACTIVE BWT KEY FILE
-                        if item.endswith(".bwtk"):
+                        if element.endswith(".bwtk"):
                             active_bwt_key_filepath = f"./empaktor_tmp/{item}/{element}"
                             continue
 
@@ -92,9 +92,9 @@ def extract(archive_name: str, algo: str):
                             f"There was an error while reading {item}.")
                         exit(1)
         shutil.rmtree("./empaktor_tmp")
-    except Exception as e:
-        print(e)
-        exit(0)
+    # except Exception as e:
+    #     print(e)
+    #     exit(0)
 
 
 def append_filename(filename: str, string: str) -> str:
@@ -133,3 +133,25 @@ def help_msg():
     print(f"To extract, run:")
     print(
         f"python3 empaktor.py [--extract | -x] <archive_name> [--compression | -c] [rle | huffman | bwt]\n")
+
+
+def detect_algo(archive_name: str) -> str:
+    try:
+        with tarfile.open(archive_name) as file:
+            os.mkdir("./empaktor_tmp")
+            file.extractall("./empaktor_tmp")
+            archive = os.listdir("./empaktor_tmp")
+            for item in archive:
+                if os.path.isdir(f"./empaktor_tmp/{item}"):
+                    first_subfolder = os.listdir(f"./empaktor_tmp/{item}")
+                    for element in first_subfolder:
+                        if ".hcm" in element:
+                            detected_alg = "huffman"
+                        if ".bwtk" in element:
+                            detected_alg = "bwt"
+                    print(f"Detected algorithm: {detected_alg}")
+        shutil.rmtree("./empaktor_tmp")
+        return detected_alg
+    except Exception as e:
+        print(e)
+        exit(0)
