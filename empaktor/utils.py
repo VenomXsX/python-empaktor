@@ -7,94 +7,94 @@ from cmp_burrows.burrows_wheeler import transform_bwt, inverse_bwt
 
 
 def extract(archive_name: str, algo: str):
-    # try:
-    with tarfile.open(archive_name) as file:
-        os.mkdir("./empaktor_tmp")
-        file.extractall("./empaktor_tmp")
-        archive = os.listdir("./empaktor_tmp")
-        for item in archive:
-            if algo in ["huffman", "bwt"]:
-                current_subfolder = os.listdir(f"./empaktor_tmp/{item}")
-                for element in current_subfolder:
-                    # SET ACTIVE HUFFMAN MAP
-                    if element.endswith(".hcm"):
-                        active_huffman_map_filepath = f"./empaktor_tmp/{item}/{element}"
-                        continue
-                    # SET ACTIVE BWT KEY FILE
-                    if element.endswith(".bwtk"):
-                        active_bwt_key_filepath = f"./empaktor_tmp/{item}/{element}"
-                        continue
+    try:
+        with tarfile.open(archive_name) as file:
+            os.mkdir("./empaktor_tmp")
+            file.extractall("./empaktor_tmp")
+            archive = os.listdir("./empaktor_tmp")
+            for item in archive:
+                if algo in ["huffman", "bwt"]:
+                    current_subfolder = os.listdir(f"./empaktor_tmp/{item}")
+                    for element in current_subfolder:
+                        # SET ACTIVE HUFFMAN MAP
+                        if element.endswith(".hcm"):
+                            active_huffman_map_filepath = f"./empaktor_tmp/{item}/{element}"
+                            continue
+                        # SET ACTIVE BWT KEY FILE
+                        if element.endswith(".bwtk"):
+                            active_bwt_key_filepath = f"./empaktor_tmp/{item}/{element}"
+                            continue
 
-                for element in current_subfolder:
-                    if not element.endswith(".hcm") and algo == "huffman":
-                        try:
-                            with open(active_huffman_map_filepath, "r") as map_file:
-                                map = map_file.read()
-                        except EnvironmentError:
-                            print(
-                                f"There was an error reading the Huffman code map file for the file {element}")
-                        try:
-                            encoded_file_path = f"./empaktor_tmp/{item}/{element}"
-                            with open(encoded_file_path, "r") as encoded_file:
-                                content = encoded_file.read()
-                                try:
-                                    decoded_filename = element.replace(
-                                        "encoded", "decoded")
-                                    with open(decoded_filename, "w") as decoded_file:
-                                        decoded_file.write(
-                                            decode(content, algo, huffman_map=map))
-                                except EnvironmentError:
-                                    print(
-                                        f"There was an error creating the decoded filename {decoded_filename}")
-                        except EnvironmentError:
-                            print(
-                                f"There was an error while reading {element}.")
-                            exit(1)
-                    if not element.endswith(".bwtk") and algo == "bwt":
-                        try:
-                            with open(active_bwt_key_filepath, "r") as bwt_key_file:
-                                key = bwt_key_file.read()
-                        except EnvironmentError:
-                            print(
-                                f"There was an error reading the BWT key file for the file {element}")
-                        try:
-                            encoded_file_path = f"./empaktor_tmp/{item}/{element}"
-                            with open(encoded_file_path, "r") as encoded_file:
-                                content = encoded_file.read()
-                                try:
-                                    decoded_filename = element.replace(
-                                        "encoded", "decoded")
-                                    with open(decoded_filename, "w") as decoded_file:
-                                        decoded_file.write(
-                                            decode(content, algo, bwt_key=key))
-                                except EnvironmentError:
-                                    print(
-                                        f"There was an error creating the decoded filename {decoded_filename}")
-                        except EnvironmentError:
-                            print(
-                                f"There was an error while reading {element}.")
-                            exit(1)
-            else:
-                try:
-                    encoded_file_path = f"./empaktor_tmp/{item}"
-                    with open(encoded_file_path, "r") as encoded_file:
-                        content = encoded_file.read()
-                        try:
-                            decoded_filename = item.replace(
-                                "encoded", "decoded")
-                            with open(decoded_filename, "w") as decoded_file:
-                                decoded_file.write(decode(content, algo))
-                        except EnvironmentError:
-                            print(
-                                f"There was an error creating the decoded filename {decoded_filename}")
-                except EnvironmentError:
-                    print(
-                        f"There was an error while reading {item}.")
-                    exit(1)
-    shutil.rmtree("./empaktor_tmp")
-    # except Exception as e:
-    #     print(e)
-    #     exit(0)
+                    for element in current_subfolder:
+                        if not element.endswith(".hcm") and algo == "huffman":
+                            try:
+                                with open(active_huffman_map_filepath, "r") as map_file:
+                                    map = map_file.read()
+                            except EnvironmentError:
+                                print(
+                                    f"There was an error reading the Huffman code map file for the file {element}")
+                            try:
+                                encoded_file_path = f"./empaktor_tmp/{item}/{element}"
+                                with open(encoded_file_path, "r") as encoded_file:
+                                    content = encoded_file.read()
+                                    try:
+                                        decoded_filename = element.replace(
+                                            "encoded", "decoded")
+                                        with open(decoded_filename, "w") as decoded_file:
+                                            decoded_file.write(
+                                                decode(content, algo, huffman_map=map))
+                                    except EnvironmentError:
+                                        print(
+                                            f"There was an error creating the decoded filename {decoded_filename}")
+                            except EnvironmentError:
+                                print(
+                                    f"There was an error while reading {element}.")
+                                exit(1)
+                        if not element.endswith(".bwtk") and algo == "bwt":
+                            try:
+                                with open(active_bwt_key_filepath, "r") as bwt_key_file:
+                                    key = bwt_key_file.read()
+                            except EnvironmentError:
+                                print(
+                                    f"There was an error reading the BWT key file for the file {element}")
+                            try:
+                                encoded_file_path = f"./empaktor_tmp/{item}/{element}"
+                                with open(encoded_file_path, "r") as encoded_file:
+                                    content = encoded_file.read()
+                                    try:
+                                        decoded_filename = element.replace(
+                                            "encoded", "decoded")
+                                        with open(decoded_filename, "w") as decoded_file:
+                                            decoded_file.write(
+                                                decode(content, algo, bwt_key=key))
+                                    except EnvironmentError:
+                                        print(
+                                            f"There was an error creating the decoded filename {decoded_filename}")
+                            except EnvironmentError:
+                                print(
+                                    f"There was an error while reading {element}.")
+                                exit(1)
+                else:
+                    try:
+                        encoded_file_path = f"./empaktor_tmp/{item}"
+                        with open(encoded_file_path, "r") as encoded_file:
+                            content = encoded_file.read()
+                            try:
+                                decoded_filename = item.replace(
+                                    "encoded", "decoded")
+                                with open(decoded_filename, "w") as decoded_file:
+                                    decoded_file.write(decode(content, algo))
+                            except EnvironmentError:
+                                print(
+                                    f"There was an error creating the decoded filename {decoded_filename}")
+                    except EnvironmentError:
+                        print(
+                            f"There was an error while reading {item}.")
+                        exit(1)
+        shutil.rmtree("./empaktor_tmp")
+    except Exception as e:
+        print(e)
+        exit(0)
 
 
 def append_filename(filename: str, string: str) -> str:

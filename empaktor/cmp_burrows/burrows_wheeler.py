@@ -1,4 +1,7 @@
-def transform_bwt(data: str) -> str | int:
+from typing import Union
+
+
+def transform_bwt(data: str) -> Union[str, int]:
     data = data.strip()
     table = []
     for i in range(len(data)):

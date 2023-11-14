@@ -1,6 +1,7 @@
 import heapq
 from collections import Counter
 import json
+from typing import Union
 
 
 class Node:
@@ -44,7 +45,7 @@ def generate_huffman(node: Node, code: str = "", mapping: dict = None):
     return mapping
 
 
-def compress_data(data: str) -> str | str:
+def compress_data(data: str) -> Union[str, str]:
     char_freq = dict(Counter(data))
     tree = build_tree(char_freq)
     codes = generate_huffman(tree)
@@ -55,7 +56,7 @@ def compress_data(data: str) -> str | str:
     compressed_size = 0
     for char, freq in char_freq.items():
         compressed_size += char_freq[char] * len(codes[char])
-    print(f"Ratio: {compressed_size / (len(data) * 8)}") 
+    print(f"Ratio: {compressed_size / (len(data) * 8)}")
     codes = json.dumps(codes)
     return output, codes
 
