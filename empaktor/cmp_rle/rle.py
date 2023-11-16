@@ -1,5 +1,6 @@
+sep = "¶"
+
 def encode_rle(txt: str) -> str:
-    txt.replace("|", "/")
     output = ""
     i = 0
     while i < len(txt):
@@ -12,7 +13,7 @@ def encode_rle(txt: str) -> str:
                 char_idx += 1
             else:
                 break
-        output += f"|{count}|{char}"
+        output += f"{sep}{count}{sep}{char}"
         # Take off from the next unique char
         i = char_idx + 1
     return output
@@ -25,9 +26,9 @@ def decode_rle(txt: str) -> str:
     i = 0
     while i < len(txt):
         count = ""
-        if txt[i] == "|":
+        if txt[i] == sep:
             i += 1
-            while not txt[i] == "|":
+            while not txt[i] == sep:
                 count += txt[i]
                 counts.append(int(count))
                 i += 1
