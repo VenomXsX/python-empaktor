@@ -24,7 +24,7 @@ def extraction(args):
                 f"Trying to detect which algorithm to extract {archive_name}...")
             detected_alg = detect_algo(archive_name)
 
-            if detected_alg != default_alg:
+            if detected_alg is not None and detected_alg != default_alg:
                 extract(archive_name, detected_alg)
             else:
                 print(f"Extracting with default algorithm RLE")
