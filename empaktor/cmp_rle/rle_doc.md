@@ -1,14 +1,16 @@
 # Documentation of the RLE algorithm
 
 ## Encoding
+
+This function takes the text to encode as parameter then return the encoded text
+
 ```py
-encode_rle(txt: str) -> str
+def encode_rle(txt: str) -> str
 ```
 
-This function takes in 1 parameter  that is the text to encode (str) and returns the encoded text (str).
-
 ### The logic
-Iterate on each character of the string and initialize the count of the current character to 1. 
+
+Iterate on each character of the string and initialize the count of the current character to 1.
 
 ```py
 while i < len(txt):
@@ -42,6 +44,7 @@ return output
 ```
 
 ## Decoding
+
 ```py
 decode_rle(txt: str) -> str
 ```
@@ -84,6 +87,7 @@ return output
 ```
 
 ## Example
+
 ```py
 text = "AAAAABBB11111"
 encoded_text = encode_rle(text)
